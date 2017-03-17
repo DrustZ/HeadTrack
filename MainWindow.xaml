@@ -1,0 +1,17 @@
+﻿<Window x:Class="HeadTrack.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HeadTrack"
+        xmlns:WinFormHost="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration" 
+        xmlns:WinFormControls="clr-namespace:Emgu.CV.UI;assembly=Emgu.CV.UI"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="600">
+    <Grid>
+        <WindowsFormsHost Margin="0,30,0,0.5">
+            <WinFormControls:ImageBox x:Name="cambox" FunctionalMode="Minimum"/>
+        </WindowsFormsHost>
+        <Button x:Name="StartBtn" Content="Start" HorizontalAlignment="Left" Margin="10,6,0,0" VerticalAlignment="Top" Width="75" Click="StartBtn_Click"/>
+    </Grid>
+</Window>

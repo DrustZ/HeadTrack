@@ -73,8 +73,12 @@ namespace HeadTrack
                     _roi.Height = (int)pos[2];
                     _roi.Width = (int)pos[3];
                     
-                    //if (fastdetector._foundface)
+                    //when using template matching
+                    if (fastdetector._foundface){
                         CvInvoke.Rectangle(_frame, _roi, new Bgr(Color.Red).MCvScalar, 2);
+                    } else {
+                        smoother.initialized = false;
+                    }
                     if (headposition == null)
                         headposition = new HeadPosition(70.0f, _frame.Rows, _frame.Cols, 2);
                     if (!headposition.stable)
@@ -130,7 +134,8 @@ namespace HeadTrack
         private void Detect_With_TemplateMatching()
         {
             _roi = fastdetector.detect(_frame);
-            smoother.initialize(new List<float>(new float[] { _roi.X, _roi.Y, _roi.Height, _roi.Width }));
+            if (!smoother.initialized)
+                smoother.initialize(new List<float>(new float[] { _roi.X, _roi.Y, _roi.Height, _roi.Width }));
         }
     }
 }

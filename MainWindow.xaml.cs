@@ -60,8 +60,8 @@ namespace HeadTrack
                 sw = Stopwatch.StartNew();
                 _capture.Retrieve(_frame, 0);
 
-                Detect_With_Camshift();
-                //SDetect_With_TemplateMatching();
+                //Detect_With_Camshift();
+                Detect_With_TemplateMatching();
 
                 if (_roi.Height < 10 || _roi.Width < 10)
                     _detected = false;
@@ -76,7 +76,7 @@ namespace HeadTrack
                     //if (fastdetector._foundface)
                         CvInvoke.Rectangle(_frame, _roi, new Bgr(Color.Red).MCvScalar, 2);
                     if (headposition == null)
-                        headposition = new HeadPosition(80.0f, _frame.Rows, _frame.Cols);
+                        headposition = new HeadPosition(70.0f, _frame.Rows, _frame.Cols, 2);
                     if (!headposition.stable)
                         headposition.waitToStable(_roi);
                     else

@@ -33,8 +33,8 @@ namespace HeadTrack
             CvInvoke.EqualizeHist(_grayFrame, _grayFrame);
             Rectangle[] facesDetected = face.DetectMultiScale(
                         _grayFrame,
-                        1.3,
-                        7,
+                        1.1,
+                        6,
                         new System.Drawing.Size(70, 70));
             
             foreach (Rectangle face in facesDetected)

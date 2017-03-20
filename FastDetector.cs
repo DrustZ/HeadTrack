@@ -20,9 +20,9 @@ namespace HeadTrack
         Size resizedSize;
         bool _templateMatchingRunning = false;
         
-        float _templateMatchingMaxDuration = 2.0f;
+        float _templateMatchingMaxDuration = 0.5f;
         float _templateMatchingStartTime, _templateMatchingCurrentTime = 0;
-        int _resizeWidth = 320;
+        int _resizeWidth = 640;
         float _scale = 1;
 
         public bool _foundface = false;
@@ -45,7 +45,7 @@ namespace HeadTrack
             resizedSize = new Size((int)(_scale * frame.Cols), (int)(_scale * frame.Rows));
             Mat resizedFrame = new Mat();
             CvInvoke.Resize(frame, resizedFrame, resizedSize);
-            CvInvoke.CvtColor(resizedFrame, resizedFrame, ColorConversion.Bgr2Gray);
+            CvInvoke.CvtColor(frame, resizedFrame, ColorConversion.Bgr2Gray);
             CvInvoke.EqualizeHist(resizedFrame, resizedFrame);
             if (!_foundface)
                 detectFaceAllSizes(ref resizedFrame);
@@ -110,7 +110,7 @@ namespace HeadTrack
         
         void detectFaceAllSizes(ref Mat frame)
         {
-            Rectangle[] facesDetected = _faceCascade.DetectMultiScale(frame, 1.1, 3, new Size(frame.Rows / 5, frame.Cols / 5));
+            Rectangle[] facesDetected = _faceCascade.DetectMultiScale(frame, 1.05, 3, new Size(frame.Rows / 5, frame.Cols / 5));
             if (facesDetected.Count() <= 0) return;
             _foundface = true;
             _roi = biggestFace(facesDetected);
@@ -121,8 +121,8 @@ namespace HeadTrack
         void detectFaceAroundRoi(ref Mat frame)
         {
             // Detect faces sized +/-20% off biggest face in previous search
-            Rectangle[] facesDetected = _faceCascade.DetectMultiScale(new Mat(frame, _searchRoi), 1.1, 3, new Size((int)(_roi.Width * 0.8f), (int)(_roi.Height * 0.8f)),
-                                          new Size((int)(_roi.Width * 1.2f), (int)(_roi.Width * 1.2f)));
+            Rectangle[] facesDetected = _faceCascade.DetectMultiScale(new Mat(frame, _searchRoi), 1.05, 3, new Size((int)(_roi.Width * 0.8f), (int)(_roi.Height * 0.8f)),
+                                          new Size((int)(_roi.Width * 1.2f), (int)(_roi.Height * 1.2f)));
 
             if (facesDetected.Count() == 0)
             {

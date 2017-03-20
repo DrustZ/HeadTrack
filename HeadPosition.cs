@@ -13,33 +13,44 @@ namespace HeadTrack
 {
     class HeadPosition
     {
-        float head_width_cm = 16.0f;
-        float head_height_cm = 20.0f;
+        float head_width_cm, head_height_cm;
         // angle between side of face and diagonal across
         float head_small_angle;
         float head_diag_cm; // diagonal of face in real space
-        float tan_hsa, cos_hsa, sin_hsa;
+        //float tan_hsa, cos_hsa, sin_hsa;
         float fov_width, tan_fov_width;
         float camheight_cam, camwidth_cam, distance_from_camera_to_screen;
+        private int mode = 1;//1 for camshift, 2 for fastdetect
 
         List<float> headDiagonal = new List<float>();
 
         public float x, y, z; //position in cm
         public bool stable = false;
-
-        public HeadPosition(float fov, float cam_h, float cam_w, float dist_from_cam_to_screen = 9.0f)
+        
+        public HeadPosition(float fov, float cam_h, float cam_w, int detectmode = 1, float dist_from_cam_to_screen = 9.0f)
         {
-            head_small_angle = (float)Math.Atan(head_width_cm / head_height_cm);
+            mode = detectmode;
+            if (mode == 1)
+            {
+                head_height_cm = 20.0f;
+                head_width_cm = 16.0f;
+            }
+            else
+            {
+                head_height_cm = head_width_cm = 18.0f;
+            }
+            head_small_angle = (float)Math.Atan(head_width_cm / head_height_cm); 
             head_diag_cm = (float)Math.Sqrt((head_width_cm * head_width_cm) + (head_height_cm * head_height_cm));
-            sin_hsa = (float)Math.Sin(head_small_angle); //precalculated sine
-            cos_hsa = (float)Math.Cos(head_small_angle); //precalculated cosine
-            tan_hsa = (float)Math.Tan(head_small_angle); //precalculated tan
+            //sin_hsa = (float)Math.Sin(head_small_angle); //precalculated sine
+            //cos_hsa = (float)Math.Cos(head_small_angle); //precalculated cosine
+            //tan_hsa = (float)Math.Tan(head_small_angle); //precalculated tan
 
             fov_width = (float)(fov* Math.PI / 180.0);
             tan_fov_width = 2 * (float)Math.Tan(fov_width / 2);
             distance_from_camera_to_screen = dist_from_cam_to_screen;
             camheight_cam = cam_h;
             camwidth_cam  = cam_w;
+            
         }
 
         public void waitToStable(Rectangle facetrackrObj)
@@ -66,15 +77,20 @@ namespace HeadTrack
 
         public void TrackPosition(Rectangle facetrackrObj)
         {
-
+            //assume the face rect is a square
             var w = facetrackrObj.Width;
             var h = facetrackrObj.Height;
-            var fx = facetrackrObj.X;
-            var fy = facetrackrObj.Y;
+            if (mode == 2)
+            {
+                w = Math.Max(w, h);
+                h = w;
+            }
+            var fx = facetrackrObj.X+w/2;
+            var fy = facetrackrObj.Y+h/2;
             float head_diag_cam = (float)Math.Sqrt((w * w) + (h * h));
             // calculate cm-distance from screen
             z = (head_diag_cm * this.camwidth_cam) / (tan_fov_width * head_diag_cam);
-
+            z *= 0.8f;
             // calculate cm-position relative to center of screen
             x = -((fx / this.camwidth_cam) - 0.5f) * z * tan_fov_width;
             y = -((fy / this.camheight_cam) - 0.5f) * z * tan_fov_width * (this.camheight_cam / this.camwidth_cam);

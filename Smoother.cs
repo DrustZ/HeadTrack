@@ -12,10 +12,10 @@ namespace HeadTrack
     {
         private float alpha, interval, lastUpdate;
         private List<float> sp, sp2;
-        private bool initialized = false;
         private bool interpolate = false;
         Stopwatch sw = new Stopwatch();
-
+        public bool initialized = false;
+        
         public Smoother(float inter, bool interpolate = false, float alp = 0.4f)
         {
             alpha = alp;
